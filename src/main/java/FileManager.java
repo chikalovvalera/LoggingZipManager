@@ -5,7 +5,13 @@ import java.util.List;
 
 public class FileManager {
 
-    public FileFilter findByType(String type){
+
+    /**
+     * filter file by extension
+     * <br>Example : MyFile.txt (arg = txt) => true
+     * @return
+     */
+    public FileFilter findByExtension(String type){
         FileFilter fileFilter = new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -17,6 +23,12 @@ public class FileManager {
         return fileFilter;
     }
 
+    /**
+     * filter file by substring name
+     * <br>Example : MyFile.txt (arg = MyF) => true
+     * <br>Example : MyFile.txt (arg = myf) => false
+     * @return
+     */
     public FileFilter findByNameSubstring(String substring){
         FileFilter fileFilter = new FileFilter() {
             @Override
@@ -28,6 +40,11 @@ public class FileManager {
         return fileFilter;
     }
 
+    /**
+     * filter file by substring name ignore case
+     * <br>Example : MyFile.txt (arg = myf) => true
+     * @return
+     */
     public FileFilter findByNameSubstringIgnoreCase(String substring){
         FileFilter fileFilter = new FileFilter() {
             @Override
@@ -39,6 +56,10 @@ public class FileManager {
         return fileFilter;
     }
 
+    /**
+     * Not filter
+     * @return
+     */
     private final static FileFilter acceptAll(){
         FileFilter fileFilter = new FileFilter() {
             @Override
@@ -48,6 +69,30 @@ public class FileManager {
         };
         return fileFilter;
     }
+
+    /**
+     * Get all files on directory include subfolders
+     * @param files
+     * @param file
+     * @param fileFilter
+     * @return
+     */
+    public List<File> getAllFileOnDirectory(File rootDir, FileFilter fileFilter) throws Exception{
+        if (rootDir != null && rootDir.exists()){
+            if (rootDir.isDirectory()){
+                return getAllFiles(new ArrayList<File>(), rootDir, fileFilter == null ? acceptAll() : fileFilter);
+            }
+        }
+        throw new Exception("file not found");
+    }
+
+    /**
+     * Get all files on directory include subfolders
+     * @param files
+     * @param file
+     * @param fileFilter
+     * @return
+     */
     public List<File> getAllFileOnDirectory(String dir, FileFilter fileFilter){
         File rootDir = new File(dir);
 
@@ -58,6 +103,7 @@ public class FileManager {
         }
         return null;
     }
+
 
     private List<File> getAllFiles(List<File> files, File file, final FileFilter fileFilter){
         if (file != null && file.exists()){
